@@ -162,9 +162,6 @@ rc()
   chroot ${release} rc-update add avahi-dnsconfd default
   chroot ${release} rc-update add ntpd default
   chroot ${release} sysrc -f /etc/rc.conf ntpd_sync_on_start="YES"
-  # Installer files
-  chroot cp settings/pc-installdialog ${release}/usr/local/sbin/
-  chroot cp settings/rc.install ${release}/etc/
 }
 
 user()

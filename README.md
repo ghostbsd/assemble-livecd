@@ -1,5 +1,5 @@
-ghostbsd-build
-==============
+assemble-livecd
+===============
 Live media creator for GhostBSD distribution
 
 ## Introduction
@@ -7,19 +7,14 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 
 ## Features
 * Build GhostBSD from packages
-* Mate, XFCE, Cinnamon and KDE desktop environments
 * Hybrid DVD/USB image
-
-## Graphics support
-* Compatible with VirtualBox, VMware, NVIDIA graphics out of box
-* SCFB support with automatic best resolution for UEFI enabled systems with Intel/AMD graphics
 
 ## System requirements
 * Latest version of GhostBSD 
 * 20GB of free disk space
 * 4GB of free memory
 
-Note: GhostBSD 19.09 and later should be used to build ISO.
+Note: GhostBSD should be used to build ISO.
 
 ## Initial setup
 Install the required packages:
@@ -33,62 +28,29 @@ sysrc -f /etc/rc.conf kld_list="linux64"
 ```
 Clone the repo:
 ```
-git clone https://www.github.com/ghostbsd/ghostbsd-build.git
+git clone https://www.github.com/vimanuelt/assemble-livecd.git
 ```
 ## Starting a build
 #### Enter the directory for running the LiveCD build script:
 ```
-cd ghostbsd-build
+cd assemble-livecd
 ```
 
-#### To build a GhostBSD with __MATE__ as default desktop
-```
-./build.sh
-```
-or
-```
-./build.sh -d mate
-```
-
-#### (Option) To build GhostBSD with __XFCE__ as default desktop
-```
-./build.sh -d xfce
-```   
-
-#### (Option) To build GhostBSD with __Cinnamon__ as default desktop
-```
-./build.sh -d cinnamon
-```   
-
-#### (Option) To build GhostBSD the default __KDE__ desktop
-```
-./build.sh -d kde
-```    
-
-#### (Option) To build GhostBSD release __MATE__ desktop
+#### To build a GhostBSD 
 ```
 ./build.sh -r release
 ```
 or
 ```
-./build.sh -d mate -r release
-```
-
-#### (Option) To build GhostBSD development __MATE__ desktop iso
-```
-./build.sh
-```
-or 
-```
-./build.sh -d mate -r devel
+./build.sh -r devel
 ```
 
 ## Burn an image to cd:
 ```
-cdrecord /usr/local/ghostbsd-build/iso/GhostBSD19.10.iso
+cdrecord /usr/local/ghostbsd-build/iso/GhostBSD-2020-04.iso
 ```
 
 ## Write an image to usb stick:
 ```
-dd if=/usr/local/ghostbsd-build/iso/GhostBSD19.10.iso of=/dev/da0 bs=4m
+dd if=/usr/local/ghostbsd-build/iso/GhostBSD-2020-04.iso of=/dev/da0 bs=4m
 ```

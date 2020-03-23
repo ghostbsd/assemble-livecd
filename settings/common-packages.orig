@@ -1,0 +1,15 @@
+pkg
+sudo
+vim
+nano
+tmux
+doas
+cdialog
+git
+jq
+bash
+fish
+ghostbsd-utils
+pc-sysinstall
+python37
+rust

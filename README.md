@@ -17,11 +17,6 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 Note: GhostBSD should be used to build ISO.
 
 ## Initial setup
-Make sure to have linux64 kernel module loaded
-```
-kldload linux64
-sysrc -f /etc/rc.conf kld_list="linux64"
-```
 Clone the repo:
 ```
 git clone https://www.github.com/vimanuelt/assemble-livecd.git

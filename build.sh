@@ -30,7 +30,7 @@ case $kernrel in
     ;;
 esac
 
-desktop_list=`ls ${cwd}/packages | tr '\n' ' '`
+# desktop_list=`ls ${cwd}/packages | tr '\n' ' '`
 
 helpFunction()
 {
@@ -56,9 +56,6 @@ then
   export release_type="devel"
 fi
 
-# Source our functions
-#. functions.sh
-
 # version="20.03"
 if [ "${release_type}" == "release" ] ; then
   version=`date "+-%y.%m"`
@@ -71,9 +68,8 @@ fi
 label="GhostBSD"
 isopath="/usr/local/ghostbsd-build/iso/${label}${version}${time_stamp}.iso"
 union_dirs=${union_dirs:-"bin boot compat dev etc include lib libdata libexec \
-man media mnt net proc rescue root sbin share tests tmp usr/home usr/local/etc \
-var www"}
-
+man media mnt net proc rescue root sbin share tests tmp usr/home \
+usr/local/etc var www"}
 
 workspace()
 {
@@ -103,6 +99,8 @@ workspace()
   mkdir -p /usr/local/ghostbsd-build/software_packages
   mkdir -p /usr/local/ghostbsd-build/base_packages
   mkdir -p ${release}
+  mkdir -p ${release}/usr/local/etc
+  mkdir -p ${release}/usr/local/sbin
 }
 
 base()
@@ -113,8 +111,7 @@ base()
   mount_nullfs /usr/local/ghostbsd-build/base ${release}/var/cache/pkg
   pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ \
 -C GhostBSD install -y \
--g os-generic-kernel os-generic-userland os-generic-userland-lib32 \
-os-generic-userland-devtools
+-g os-generic-kernel os-generic-userland os-generic-userland-lib32 
 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
@@ -133,9 +130,7 @@ packages_software()
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
-
   cp -R ${cwd}/repos/ ${release}
-
 }
 
 rc()
@@ -152,79 +147,47 @@ rc()
   chroot ${release} sysrc -f /etc/rc.conf kld_list="linux linux64 cuse"
   chroot ${release} rc-update add devfs default
   chroot ${release} rc-update add moused default
-  chroot ${release} rc-update add dbus default
-  chroot ${release} rc-update add hald default
-#  chroot ${release} rc-update add webcamd default
-  chroot ${release} rc-update add powerd default
+##  chroot ${release} rc-update add dbus default
+##  chroot ${release} rc-update add hald default
+##  chroot ${release} rc-update add webcamd default
+##  chroot ${release} rc-update add powerd default
   chroot ${release} rc-update delete netmount default
-#  chroot ${release} rc-update add cupsd default
-  chroot ${release} rc-update add avahi-daemon default
-  chroot ${release} rc-update add avahi-dnsconfd default
-  chroot ${release} rc-update add ntpd default
-  chroot ${release} sysrc -f /etc/rc.conf ntpd_sync_on_start="YES"
+##  chroot ${release} rc-update add cupsd default
+##  chroot ${release} rc-update add avahi-daemon default
+##  chroot ${release} rc-update add avahi-dnsconfd default
+##  chroot ${release} rc-update add ntpd default
+##  chroot ${release} sysrc -f /etc/rc.conf ntpd_sync_on_start="YES"
 }
 
 user()
-{
+ {
   echo "Adding user"
   chroot ${release} pw useradd ghostbsd -c "Live User" \
 -d "/usr/home/${liveuser}" -g wheel -G operator,video -m \
--s /usr/local/bin/fish -k /usr/share/skel -w yes
-}
+-s /bin/sh -k /usr/share/skel -w yes
+ }
 
 extra_config()
 {
   . ${cwd}/extra/common-live-setting.sh
   . ${cwd}/extra/common-base-setting.sh
   . ${cwd}/extra/setuser.sh
-#  . ${cwd}/extra/dm.sh
   . ${cwd}/extra/finalize.sh
   . ${cwd}/extra/autologin.sh
   . ${cwd}/extra/gitpkg.sh
-#  . ${cwd}/extra/mate-live-settings.sh
   set_live_system
-  setup_liveuser
+  mkdir -p ${release}/usr/local/etc
+  mkdir -p ${release}/usr/local/sbin
+  cp -Rf ${cwd}/scripts/pc-installdialog ${release}/usr/local/sbin/
+  cp -Rf ${cwd}/scripts/rc.install ${release}/etc/
+  ## setup_liveuser
   setup_base
   setup_autologin
   final_setup
   echo "gop set 0" >> ${release}/boot/loader.rc.local
   chroot ${release} cap_mkdb /etc/login.conf
   mkdir -p ${release}/usr/local/share/ghostbsd
-#  echo "${desktop}" > ${release}/usr/local/share/ghostbsd
-#/desktop
 }
-
-#xorg()
-#{
-#  if [ -n "${desktop}" ] ; then
-#    install -o root -g wheel -m 755 "${cwd}/xorg/bin/xconfig" "/usr/local/ghostb
-# sd-build/release/usr/local/bin/"
-#    install -o root -g wheel -m 755 "${cwd}/xorg/rc.d/xconfig" "/usr/local/ghost
-#bsd-build/release/usr/local/etc/rc.d/"
-#    if [ -f "${release}/sbin/openrc-run" ] ; then
-#      install -o root -g wheel -m 755 "${cwd}/xorg/init.d/xconfig" "/usr/local/g
-#hostbsd-build/release/usr/local/etc/init.d/"
-#    fi
-#    if [ ! -d "${release}/usr/local/etc/X11/cardDetect/"
-#] ; then
-#      mkdir -p ${release}/usr/local/etc/X11/cardDetect
-#    fi
-#    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.vesa" "/u
-#sr/local/ghostbsd-build/release/usr/local/etc/X11/cardDetect/"
-#    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.scfb" "/u
-#sr/local/ghostbsd-build/release/usr/local/etc/X11/cardDetect/"
-#    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.virtualbo
-#x" "${release}/usr/local/etc/X11/cardDetect/"
-#    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.vmware" "
-#${release}/usr/local/etc/X11/cardDetect/"
-#    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.nvidia" "
-#${release}/usr/local/etc/X11/cardDetect/"
-#    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.intel" "/
-#usr/local/ghostbsd-build/release/usr/local/etc/X11/cardDetect/"
-#    install -o root -g wheel -m 755 "${cwd}/xorg/cardDetect/XF86Config.modesetti
-#ng" "${release}/usr/local/etc/X11/cardDetect/"
-#  fi
-# }
 
 uzip()
 {
@@ -281,14 +244,8 @@ image()
   ls -lh $isopath
   cd /usr/local/ghostbsd-build/iso
   shafile=$(echo ${isopath} | cut -d / -f6).sha256
-#  torrent=$(echo ${isopath} | cut -d / -f6).torrent
-#  tracker1="http://tracker.openbittorrent.com:80/announce"
-#  tracker2="udp://tracker.opentrackr.org:1337"
-#  tracker3="udp://tracker.coppersurfer.tk:6969"
   echo "Creating sha256 \"/usr/local/ghostbsd-build/iso/${shafile}\""
   sha256 `echo ${isopath} | cut -d / -f6` > /usr/local/ghostbsd-build/iso/${shafile}
-#  transmission-create -o /usr/local/ghostbsd-build/iso/${torrent} -t ${tracker1} -t ${tracker3} -t ${tracker3} ${isopath}
-#  chmod 644 /usr/local/ghostbsd-build/iso/${torrent}
   cd -
 }
 
@@ -296,7 +253,6 @@ workspace
 base
 packages_software
 user
-# xorg
 rc
 extra_config
 uzip

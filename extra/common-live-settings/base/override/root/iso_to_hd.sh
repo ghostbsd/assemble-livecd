@@ -7,22 +7,8 @@ desktop=$(cat /usr/local/share/ghostbsd/desktop)
 # removing the old network configuration
 purge_live_settings()
 {
-  case $desktop in
-    mate)
-      rm /usr/local/share/glib-2.0/schemas/92_org.gnome.desktop.screensaver.gschema.override
-      rm /usr/local/share/glib-2.0/schemas/92_org.mate.lockdown.gschema.override
-      rm /usr/local/share/glib-2.0/schemas/92_org.mate.SettingsDaemon.plugins.housekeeping.gschema.override
-      glib-compile-schemas /usr/local/share/glib-2.0/schemas ;;
-    xfce)
-      pkg delete -y xfce-live-settings ;;
-    cinnamon)
-      ;;
-    kde)
-      ;;
-  esac
   # Removing livecd hostname.
   ( echo 'g/hostname="livecd"/d' ; echo 'wq' ) | ex -s /etc/rc.conf
-  rc-update add xconfig default
 }
 
 set_sudoers()
@@ -57,69 +43,6 @@ remove_ghostbsd_user()
   ( echo 'g/ghostbsd:\\"/d' ; echo 'wq' ) | ex -s /etc/gettytab
   ( echo 'g/:al=ghostbsd:ht:np:sp#115200:/d' ; echo 'wq' ) | ex -s /etc/gettytab
   sed -i "" "/ttyv0/s/ghostbsd/Pc/g" /etc/ttys
-}
-
-setup_slim_and_xinitrc()
-{
-  echo 'exec mate-session' > /root/.xinitrc
-  sed -i "" -e 's/#default_user  /default_user  /g' /usr/local/etc/slim.conf
-  for user in `ls /usr/home/` ; do
-    echo 'exec mate-session' > /usr/home/${user}/.xinitrc
-    chown ${user}:wheel /usr/home/${user}/.xinitrc
-    sed -i "" -e "s/simone/${user}/g" /usr/local/etc/slim.conf
-  done
-  rc-update add slim default
-  sed -i "" -e 's/sessiondir    /#sessiondir    /g' /usr/local/etc/slim.conf
-}
-
-setup_lightdm_and_xinitrc()
-{
-  case $desktop in
-    mate)
-      echo 'exec mate-session' > /root/.xinitrc
-      for user in `ls /usr/home/` ; do
-        echo 'exec mate-session' > /usr/home/${user}/.xinitrc
-        chown ${user}:wheel /usr/home/${user}/.xinitrc
-      done ;;
-    xfce)
-      echo 'exec startxfce4' > /root/.xinitrc
-      for user in `ls /usr/home/` ; do
-        echo 'exec startxfce4' > /usr/home/${user}/.xinitrc
-        chown ${user}:wheel /usr/home/${user}/.xinitrc
-      done ;;
-    cinnamon)
-      echo 'exec cinnamon-session' > /root/.xinitrc
-      for user in `ls /usr/home/` ; do
-        echo 'exec cinnamon-session' > /usr/home/${user}/.xinitrc
-        chown ${user}:wheel /usr/home/${user}/.xinitrc
-      done ;;
-  esac
-  rc-update add lightdm default
-}
-
-setup_sddm_and_xinitrc()
-{
-  case $desktop in
-     kde)
-      echo 'exec startkde' > /root/.xinitrc
-      for user in `ls /usr/home/` ; do
-        echo 'exec startkde' > /usr/home/${user}/.xinitrc
-        chown ${user}:wheel /usr/home/${user}/.xinitrc
-      done ;;
-  esac
-  rc-update add sddm default
-}
-
-set_qt5ct()
-{
-  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /home/${user}/.xinitrc
-  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /root/.xinitrc
-  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /home/${user}/.xprofile
-  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /root/.xprofile
-  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /home/${user}/.bashrc
-  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /root/.bashrc
-  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /home/${user}/.bash_profile
-  echo "export QT_QPA_PLATFORMTHEME=qt5ct" > /root/.bash_profile
 }
 
 PolicyKit_setting()
@@ -171,13 +94,3 @@ set_nohistory
 fix_perms
 remove_ghostbsd_user
 PolicyKit_setting
-# setup_slim_and_xinitrc
-case $desktop in
-  kde)
-    setup_sddm_and_xinitrc
-    set_qt5ct
-    ;;
-  *)
-    setup_lightdm_and_xinitrc
-    ;;
-esac

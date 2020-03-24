@@ -10,6 +10,10 @@
 
 MACHINE=`uname -m`
 BRAND="GhostBSD"
+
+# Location of pc-sysinstall
+PCSYS="/usr/local/sbin/pc-sysinstall"
+
 ## if [ -e "/var/db/ghostbsd-manifest.json" ] ; then
 ##  _tmp=`jq -r '."os_name"' "/var/db/ghostbsd-manifest.json" 2>/dev/null`
 ##  if [ -n "${_tmp}" -a "${_tmp}" != "null" ] ; then
@@ -17,8 +21,8 @@ BRAND="GhostBSD"
 ##  fi
 ## fi
 
-if [ -e "/usr/local/sbin/pc-installdialog" ] ; then
-	PCINSTALL="/usr/local/sbin/pc-installdialog"
+if [ -e "/etc/pc-installdialog" ] ; then
+	PCINSTALL="/etc/pc-installdialog"
 else
 	PCINSTALL="/usr/sbin/pc-installdialog"
 fi
@@ -82,7 +86,7 @@ if glabel status | grep -q "msdosfs/GHOSTBSDCONF"; then
 	mkdir /tmp/GHOSTBSDCONF
         mount_msdosfs /dev/msdosfs/GHOSTBSDCONF /tmp/GHOSTBSDCONF
 	# Check if we have an auto-install directive
-	if pc-sysinstall start-autoinstall /tmp/GHOSTBSDCONF/installerconfig; then
+	if ${PCSYS} start-autoinstall /tmp/GHOSTBSDCONF/installerconfig; then
 		dialog --backtitle "${BRAND} Installer" --title "Complete" --no-cancel --ok-label "Reboot" --pause "Installation of ${BRAND} complete! Rebooting in 10 seconds" 10 30 10
 		reboot
 	else
@@ -93,7 +97,7 @@ fi
 
 if [ -f /etc/installerconfig ]; then
 	# Check if we have an auto-install directive
-	if pc-sysinstall start-autoinstall /etc/installerconfig; then
+	if ${PCSYS} start-autoinstall /etc/installerconfig; then
 		dialog --backtitle "${BRAND} Installer" --title "Complete" --no-cancel --ok-label "Reboot" --pause "Installation of ${BRAND} complete! Rebooting in 10 seconds" 10 30 10
 		reboot
 	else

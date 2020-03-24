@@ -7,12 +7,12 @@
 
 #See if this is a branded bootup and use that name
 BRAND="GhostBSD"
-#if [ -e "/var/db/ghostbsd-manifest.json" ] ; then
-#  _tmp=`jq -r '."os_name"' "/var/db/ghostbsd-manifest.json"`
-#  if [ -n "${_tmp}" -a "${_tmp}" != "null" ] ; then
-#    BRAND="${_tmp}"
-#  fi
-#fi
+##if [ -e "/var/db/ghostbsd-manifest.json" ] ; then
+##  _tmp=`jq -r '."os_name"' "/var/db/ghostbsd-manifest.json"`
+##  if [ -n "${_tmp}" -a "${_tmp}" != "null" ] ; then
+##    BRAND="${_tmp}"
+##  fi
+##fi
 
 # Dialog menu title
 TITLE="${BRAND} Install Dialog"
@@ -735,7 +735,7 @@ get_os_flavor()
 
   for flavor in $osflavors
   do
-	desc=$(jq -r '."iso"."os-flavors"."'${flavor}'"."description"' ${TRUEOS_MANIFEST})
+	desc=$(jq -r '."iso"."os-flavors"."'${flavor}'"."description"' ${GHOSTBSD_MANIFEST})
 	flavorlist="$flavorlist $flavor \"$desc\""
   done
 
@@ -752,13 +752,13 @@ get_os_flavor()
   OSINSTALLFLAVOR="$ANS"
 
   # If this flavor defines any new packages to install, grab those now
-  flavorpkgs=$(jq -r '."iso"."os-flavors"."'$OSINSTALLFLAVOR'"."packages"' ${TRUEOS_MANIFEST})
+  flavorpkgs=$(jq -r '."iso"."os-flavors"."'$OSINSTALLFLAVOR'"."packages"' ${GHOSTBSD_MANIFEST})
   if [ -n "$flavorpkgs" -a "$flavorpkgs" != "null" ] ; then
     EXTRAPKGS="$flavorpkgs"
   fi
 
   # Check if the manifest specified an alternative flavor name to install
-  altflavor=$(jq -r '."iso"."os-flavors"."'$OSINSTALLFLAVOR'"."flavor"' ${TRUEOS_MANIFEST})
+  altflavor=$(jq -r '."iso"."os-flavors"."'$OSINSTALLFLAVOR'"."flavor"' ${GHOSTBSD_MANIFEST})
   if [ -n "$altflavor" -a "$altflavor" != "null" ] ; then
     OSINSTALLFLAVOR="$altflavor"
   fi
@@ -1214,19 +1214,19 @@ start_menu_loop()
 load_manifest_defaults()
 {
 	# Check if default pool name is specified
-	newpool=$(jq -r '."iso"."pool"."name"' ${TRUEOS_MANIFEST})
+	newpool=$(jq -r '."iso"."pool"."name"' ${GHOSTBSD_MANIFEST})
 	if [ -n "$newpool" -a "$newpool" != "null" ] ; then
 		POOLNAME="$newpool"
 	fi
 
 	# Check if list of flavors provided in manifest
-	osflavors=$(jq -r '."iso"."os-flavors" | keys[]' ${TRUEOS_MANIFEST} 2>/dev/null | tr -s '\n' ' ')
+	osflavors=$(jq -r '."iso"."os-flavors" | keys[]' ${GHOSTBSD_MANIFEST} 2>/dev/null | tr -s '\n' ' ')
 	#Load the list of install steps that are desired
-	install_pages=$(jq -r '."iso"."install-dialog"."pages"[]' ${TRUEOS_MANIFEST} 2>/dev/null | tr -s '\n' ' ')
+	install_pages=$(jq -r '."iso"."install-dialog"."pages"[]' ${GHOSTBSD_MANIFEST} 2>/dev/null | tr -s '\n' ' ')
 	if [ "${install_pages}" = "null" ] ; then install_pages="" ; fi
 }
 
-if [ -e "$TRUEOS_MANIFEST" ] ; then
+if [ -e "$GHOSTBSD_MANIFEST" ] ; then
 	load_manifest_defaults
 fi
 

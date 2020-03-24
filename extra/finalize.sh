@@ -47,7 +47,7 @@ permit nopass keepenv :wheel cmd killall args wpa_supplicant
 final_setup()
 {
   default_ghostbsd_rc_conf
-  set_sudoers
-  set_doas
+#  set_sudoers
+#  set_doas
 #  vmware_supports
 }

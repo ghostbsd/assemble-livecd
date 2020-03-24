@@ -17,10 +17,6 @@ The purpose of this tool is quickly generate live images for GhostBSD.
 Note: GhostBSD should be used to build ISO.
 
 ## Initial setup
-Install the required packages:
-```
-pkg install git transmission-cli rsync
-```
 Make sure to have linux64 kernel module loaded
 ```
 kldload linux64
@@ -53,4 +49,12 @@ cdrecord /usr/local/ghostbsd-build/iso/GhostBSD-2020-04.iso
 ## Write an image to usb stick:
 ```
 dd if=/usr/local/ghostbsd-build/iso/GhostBSD-2020-04.iso of=/dev/da0 bs=4m
+```
+
+## Once at a shell prompt, enter the following commands
+```
+su
+dhcpcd
+cd /etc
+./rc.install
 ```

@@ -168,12 +168,11 @@ user()
 
 extra_config()
 {
-  . ${cwd}/extra/common-live-setting.sh
-  . ${cwd}/extra/common-base-setting.sh
-  . ${cwd}/extra/setuser.sh
-  . ${cwd}/extra/finalize.sh
-  . ${cwd}/extra/autologin.sh
-  . ${cwd}/extra/gitpkg.sh
+  . ${cwd}/scripts/common-live-setting.sh
+  . ${cwd}/scripts/common-base-setting.sh
+  . ${cwd}/scripts/finalize.sh
+  . ${cwd}/scripts/autologin.sh
+  . ${cwd}/scripts/gitpkg.sh
   set_live_system
   mkdir -p ${release}/usr/local/etc
   mkdir -p ${release}/usr/local/sbin

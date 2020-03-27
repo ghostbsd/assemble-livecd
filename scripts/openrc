@@ -30,6 +30,9 @@ fi
 # Sleep a tick first, which prevents from odd services from crashing
 sleep 1
 
+# Start dhcpcd
+su -l root -c '/sbin/dhcpcd'
+
 # Start install script as root user
 su -l root -c 'sh /etc/rc.install'
 

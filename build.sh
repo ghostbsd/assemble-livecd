@@ -109,10 +109,11 @@ base()
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs /usr/local/ghostbsd-build/base ${release}/var/cache/pkg
-  pkg-static -r ${release} -R ${cwd}/repos/usr/local/etc/pkg/repos/ \
--C GhostBSD install -y \
--g os-generic-kernel os-generic-userland os-generic-userland-lib32 
-
+  mkdir -p ${release}/usr/local/etc/pkg/repos
+  cp -R ${cwd}/settings/GhostBSD.conf ${release}/usr/local/etc/pkg/repos/GhostBSD.conf
+  cp -R ${cwd}/settings/FreeBSD.conf ${release}/usr/local/etc/pkg/repos/FreeBSD.conf
+  cat ${cwd}/settings/base-packages | xargs pkg-static -r ${release} \
+-R ${cwd}/settings/ -C GhostBSD install -y 
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
   touch ${release}/etc/fstab
@@ -121,7 +122,6 @@ base()
 
 packages_software()
 {
-  cp -R ${cwd}/repos/ ${release}
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs /usr/local/ghostbsd-build/software_packages ${release}/var/cache/pkg
@@ -130,7 +130,6 @@ packages_software()
   mkdir -p ${release}/compat/linux/proc
   rm ${release}/etc/resolv.conf
   umount ${release}/var/cache/pkg
-  cp -R ${cwd}/repos/ ${release}
 }
 
 rc()

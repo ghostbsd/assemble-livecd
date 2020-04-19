@@ -45,11 +45,3 @@ cdrecord /usr/local/ghostbsd-build/iso/GhostBSD-2020-04.iso
 ```
 dd if=/usr/local/ghostbsd-build/iso/GhostBSD-2020-04.iso of=/dev/da0 bs=4m
 ```
-
-## Once at a shell prompt, enter the following commands
-```
-su
-dhcpcd
-cd /etc
-./rc.install
-```

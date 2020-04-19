@@ -4,11 +4,11 @@ set -e -u
 
 export cwd="`realpath | sed 's|/scripts||g'`"
 
-# Only run as superuser
-# if [ "$(id -u)" != "0" ]; then
-#  echo "This script must be run as root" 1>&2
-#  exit 1
-#fi
+Only run as superuser
+if [ "$(id -u)" != "0" ]; then
+  echo "This script must be run as root" 1>&2
+  exit 1
+fi
 
 liveuser=ghostbsd
 
@@ -22,13 +22,13 @@ cdroot="/usr/local/ghostbsd-build/cdroot"
 
 kernrel="`uname -r`"
 
-# case $kernrel in
-#  '12.1-STABLE'|'12.1-PRERELEASE'|'12.0-STABLE') ;;
-#  *)
-#    echo "Using wrong kernel release. Use GhostBSD 20 to build iso."
-#    exit 1
-#    ;;
-#esac
+case $kernrel in
+  '12.1-STABLE'|'12.1-PRERELEASE'|'12.0-STABLE') ;;
+  *)
+    echo "Using wrong kernel release. Use GhostBSD 20 to build iso."
+    exit 1
+    ;;
+esac
 
 # desktop_list=`ls ${cwd}/packages | tr '\n' ' '`
 
@@ -79,20 +79,20 @@ workspace()
  #   fi
  # fi
 
- # if [ -d "${release}" ] ; then
- #   if [ -d /usr/local/ghostbsd-build/dev ]; then
- #     if [ "$(ls -A /usr/local/ghostbsd-build/dev)" ]; then
- #       umount /usr/local/ghostbsd-build/dev
- #     fi
- #   fi
- #   chflags -R noschg ${release}
- #   rm -rf ${release}
- # fi
+  if [ -d "${release}" ] ; then
+    if [ -d /usr/local/ghostbsd-build/dev ]; then
+      if [ "$(ls -A /usr/local/ghostbsd-build/dev)" ]; then
+        umount /usr/local/ghostbsd-build/dev
+      fi
+    fi
+    chflags -R noschg ${release}
+    rm -rf ${release}
+  fi
 
- # if [ -d "/usr/local/ghostbsd-build/cdroot" ] ; then
- #   chflags -R noschg /usr/local/ghostbsd-build/cdroot
- #   rm -rf /usr/local/ghostbsd-build/cdroot
- # fi
+  if [ -d "/usr/local/ghostbsd-build/cdroot" ] ; then
+    chflags -R noschg /usr/local/ghostbsd-build/cdroot
+    rm -rf /usr/local/ghostbsd-build/cdroot
+  fi
   mkdir -p /usr/local/ghostbsd-build
   mkdir -p /usr/local/ghostbsd-build/base
   mkdir -p /usr/local/ghostbsd-build/iso
@@ -108,7 +108,7 @@ base()
   mkdir -p ${release}/etc
   cp /etc/resolv.conf ${release}/etc/resolv.conf
   mkdir -p ${release}/var/cache/pkg
-  # mount_nullfs /usr/local/ghostbsd-build/base ${release}/var/cache/pkg
+  mount_nullfs /usr/local/ghostbsd-build/base ${release}/var/cache/pkg
   mkdir -p ${release}/usr/local/etc/pkg/repos
   cp -R ${cwd}/settings/GhostBSD.conf ${release}/usr/local/etc/pkg/repos/GhostBSD.conf
   cp -R ${cwd}/settings/FreeBSD.conf ${release}/usr/local/etc/pkg/repos/FreeBSD.conf

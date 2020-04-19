@@ -22,13 +22,13 @@ cdroot="/usr/local/ghostbsd-build/cdroot"
 
 kernrel="`uname -r`"
 
-case $kernrel in
-  '12.1-STABLE'|'12.1-PRERELEASE'|'12.0-STABLE') ;;
-  *)
-    echo "Using wrong kernel release. Use GhostBSD 20 to build iso."
-    exit 1
-    ;;
-esac
+# case $kernrel in
+#  '12.1-STABLE'|'12.1-PRERELEASE'|'12.0-STABLE') ;;
+#  *)
+#    echo "Using wrong kernel release. Use GhostBSD 20 to build iso."
+#    exit 1
+#    ;;
+#esac
 
 # desktop_list=`ls ${cwd}/packages | tr '\n' ' '`
 
@@ -73,26 +73,26 @@ usr/local/etc var www"}
 
 workspace()
 {
-  if [ -d ${release}/var/cache/pkg ]; then
-    if [ "$(ls -A ${release}/var/cache/pkg)" ]; then
-      umount ${release}/var/cache/pkg
-    fi
-  fi
+ # if [ -d ${release}/var/cache/pkg ]; then
+ #   if [ "$(ls -A ${release}/var/cache/pkg)" ]; then
+ #     umount ${release}/var/cache/pkg
+ #   fi
+ # fi
 
-  if [ -d "${release}" ] ; then
-    if [ -d /usr/local/ghostbsd-build/dev ]; then
-      if [ "$(ls -A /usr/local/ghostbsd-build/dev)" ]; then
-        umount /usr/local/ghostbsd-build/dev
-      fi
-    fi
-    chflags -R noschg ${release}
-    rm -rf ${release}
-  fi
+ # if [ -d "${release}" ] ; then
+ #   if [ -d /usr/local/ghostbsd-build/dev ]; then
+ #     if [ "$(ls -A /usr/local/ghostbsd-build/dev)" ]; then
+ #       umount /usr/local/ghostbsd-build/dev
+ #     fi
+ #   fi
+ #   chflags -R noschg ${release}
+ #   rm -rf ${release}
+ # fi
 
-  if [ -d "/usr/local/ghostbsd-build/cdroot" ] ; then
-    chflags -R noschg /usr/local/ghostbsd-build/cdroot
-    rm -rf /usr/local/ghostbsd-build/cdroot
-  fi
+ # if [ -d "/usr/local/ghostbsd-build/cdroot" ] ; then
+ #   chflags -R noschg /usr/local/ghostbsd-build/cdroot
+ #   rm -rf /usr/local/ghostbsd-build/cdroot
+ # fi
   mkdir -p /usr/local/ghostbsd-build
   mkdir -p /usr/local/ghostbsd-build/base
   mkdir -p /usr/local/ghostbsd-build/iso

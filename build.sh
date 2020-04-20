@@ -110,8 +110,8 @@ base()
   mkdir -p ${release}/var/cache/pkg
   mount_nullfs /usr/local/ghostbsd-build/base ${release}/var/cache/pkg
   mkdir -p ${release}/usr/local/etc/pkg/repos
-  cp -R ${cwd}/settings/GhostBSD.conf ${release}/usr/local/etc/pkg/repos/GhostBSD.conf
-  cp -R ${cwd}/settings/FreeBSD.conf ${release}/usr/local/etc/pkg/repos/FreeBSD.conf
+  cp -R ${cwd}/settings/GhostBSD.conf ${release}/usr/local/etc/pkg/repos/
+#  cp -R ${cwd}/settings/FreeBSD.conf ${release}/usr/local/etc/pkg/repos/FreeBSD.conf
   cat ${cwd}/settings/base-packages | xargs pkg-static -r ${release} \
 -R ${cwd}/settings/ -C GhostBSD install -y 
   rm ${release}/etc/resolv.conf

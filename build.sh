@@ -4,7 +4,7 @@ set -e -u
 
 export cwd="`realpath | sed 's|/scripts||g'`"
 
-Only run as superuser
+# Only run as superuser
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
   exit 1
@@ -56,7 +56,7 @@ then
   export release_type="devel"
 fi
 
-# version="20.03"
+# version="20.05"
 if [ "${release_type}" == "release" ] ; then
   version=`date "+-%y.%m"`
   time_stamp=""
